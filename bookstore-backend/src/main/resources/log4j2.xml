@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %p %m%n</Property>
+        <Property name="APP_LOG_ROOT">${sys:user.home}/bookstore-logs/</Property>
+
+        <Property name="LOG_LEVEL_GENERAL">ERROR</Property>
+        <Property name="LOG_LEVEL_APP">DEBUG</Property>
+        <Property name="LOG_LEVEL_HIBERNATE">WARN</Property>
+        <Property name="LOG_LEVEL_SPRING">INFO</Property>
+<!--        <Property name="LOG_LEVEL_FLYWAY">INFO</Property>-->
+<!--        <Property name="LOG_LEVEL_CXF">INFO</Property>-->
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+        </Console>
+        <RollingFile name="appLog"
+                     fileName="${APP_LOG_ROOT}/bookstore.log"
+                     filePattern="${APP_LOG_ROOT}/bookstore-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1" />
+        </RollingFile>
+        <RollingFile name="appFrameworksLog"
+                     fileName="${APP_LOG_ROOT}/bookstore_frameworks.log"
+                     filePattern="${APP_LOG_ROOT}/bookstore_frameworks-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1" />
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.bookstore" additivity="false" level="${LOG_LEVEL_APP}">
+            <AppenderRef ref="appLog" />
+        </Logger>
+        <Logger name="org.springframework" additivity="false" level="${LOG_LEVEL_SPRING}">
+            <AppenderRef ref="appFrameworksLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Root level="${LOG_LEVEL_GENERAL}">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>
