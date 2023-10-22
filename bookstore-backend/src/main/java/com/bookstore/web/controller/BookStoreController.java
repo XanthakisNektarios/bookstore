@@ -3,14 +3,21 @@ package com.bookstore.web.controller;
 import com.bookstore.dto.BookDTO;
 import com.bookstore.dto.BookListDTO;
 import com.bookstore.dto.UpdateBookRequestDTO;
+import com.bookstore.dto.ValidationErrorDTO;
 import com.bookstore.service.BookService;
+import com.bookstore.validator.UpdateBookRequestDTOValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookstore")
@@ -20,9 +27,12 @@ public class BookStoreController {
 
     private BookService bookService;
 
+    private UpdateBookRequestDTOValidator updateBookRequestDTOValidator;
+
     @Autowired
-    public BookStoreController(BookService bookService) {
+    public BookStoreController(BookService bookService, UpdateBookRequestDTOValidator updateBookRequestDTOValidator) {
         this.bookService = bookService;
+        this.updateBookRequestDTOValidator = updateBookRequestDTOValidator;
     }
 
     /**
@@ -64,9 +74,15 @@ public class BookStoreController {
      * @return
      */
     @PutMapping(value="/updateBook", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<BookDTO> updateBook(@RequestBody UpdateBookRequestDTO updateBookRequestDTO) {
+    ResponseEntity updateBook(@RequestBody UpdateBookRequestDTO updateBookRequestDTO) {
         LOGGER.debug("Start BookStoreController.updateBook");
         try{
+            BindingResult errors = new BindException(updateBookRequestDTO, "updateBookRequestDTO");
+            this.updateBookRequestDTOValidator.validate(updateBookRequestDTO, errors);
+            if (errors.hasErrors()) {
+                List<ValidationErrorDTO> errorMessages = errors.getFieldErrors().stream().map(error -> new ValidationErrorDTO(error.getField(), error.getCode(), error.getDefaultMessage())).collect(Collectors.toList());
+                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(errorMessages);
+            }
             BookDTO response = bookService.updateBook(updateBookRequestDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Throwable e){
