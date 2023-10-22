@@ -4,9 +4,9 @@
         <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %p %m%n</Property>
         <Property name="APP_LOG_ROOT">${sys:user.home}/bookstore-logs/</Property>
 
-        <Property name="LOG_LEVEL_GENERAL">ERROR</Property>
-        <Property name="LOG_LEVEL_APP">DEBUG</Property>
-        <Property name="LOG_LEVEL_HIBERNATE">WARN</Property>
+        <Property name="LOG_LEVEL_GENERAL">INFO</Property>
+        <Property name="LOG_LEVEL_APP">INFO</Property>
+        <Property name="LOG_LEVEL_HIBERNATE">INFO</Property>
         <Property name="LOG_LEVEL_SPRING">INFO</Property>
 <!--        <Property name="LOG_LEVEL_FLYWAY">INFO</Property>-->
 <!--        <Property name="LOG_LEVEL_CXF">INFO</Property>-->
@@ -41,6 +41,10 @@
             <AppenderRef ref="appLog" />
         </Logger>
         <Logger name="org.springframework" additivity="false" level="${LOG_LEVEL_SPRING}">
+            <AppenderRef ref="appFrameworksLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.hibernate" additivity="false" level="${LOG_LEVEL_HIBERNATE}">
             <AppenderRef ref="appFrameworksLog" />
             <AppenderRef ref="Console" />
         </Logger>

@@ -9,27 +9,27 @@ public class BookDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 282167793475295631L;
 
-    private String name;
+    private String title;
 
     private String author;
 
     private Integer quantity;
 
-    private Date yearOfPublication;
+    private Date publicationDate;
 
-    public BookDTO(String name, String author, Integer quantity, Date yearOfPublication) {
-        this.name = name;
+    public BookDTO(String title, String author, Integer quantity, Date publicationDate) {
+        this.title = title;
         this.author = author;
         this.quantity = quantity;
-        this.yearOfPublication = yearOfPublication;
+        this.publicationDate = publicationDate;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getAuthor() {
@@ -40,12 +40,12 @@ public class BookDTO implements Serializable {
         this.author = author;
     }
 
-    public Date getYearOfPublication() {
-        return yearOfPublication;
+    public Date getPublicationDaten() {
+        return publicationDate;
     }
 
-    public void setYearOfPublication(Date yearOfPublication) {
-        this.yearOfPublication = yearOfPublication;
+    public void setPublicationDate(Date publicationDate) {
+        this.publicationDate = publicationDate;
     }
 
     public Integer getQuantity() {
@@ -59,10 +59,10 @@ public class BookDTO implements Serializable {
     @Override
     public String toString() {
         return "BookDTO{" +
-                "name='" + name + '\'' +
+                "title='" + title + '\'' +
                 ", author='" + author + '\'' +
                 ", quantity='" + quantity + '\'' +
-                ", yearOfPublication=" + yearOfPublication +
+                ", publicationDate=" + publicationDate +
                 '}';
     }
 }
