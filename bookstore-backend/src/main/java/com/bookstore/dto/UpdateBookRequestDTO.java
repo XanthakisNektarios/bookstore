@@ -1,13 +1,11 @@
 package com.bookstore.dto;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-public class BookDTO implements Serializable {
+public class UpdateBookRequestDTO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 282167793475295631L;
+    private Long id;
 
     private String title;
 
@@ -17,11 +15,20 @@ public class BookDTO implements Serializable {
 
     private Date publicationDate;
 
-    public BookDTO(String title, String author, Integer quantity, Date publicationDate) {
+    public UpdateBookRequestDTO(Long id, String title, String author, Integer quantity, Date publicationDate) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.quantity = quantity;
         this.publicationDate = publicationDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -58,10 +65,11 @@ public class BookDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "BookDTO{" +
-                "title='" + title + '\'' +
+        return "UpdateBookRequestDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", quantity='" + quantity + '\'' +
+                ", quantity=" + quantity +
                 ", publicationDate=" + publicationDate +
                 '}';
     }
