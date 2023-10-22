@@ -32,7 +32,6 @@ public class UpdateBookRequestDTOValidator implements Validator {
             errors.reject("Provided NotificationManagementDTOValidator is null");
             return;
         }
-
         UpdateBookRequestDTO dto = (UpdateBookRequestDTO) object;
         performSyntaxValidations(dto, errors);
     }
@@ -82,27 +81,31 @@ public class UpdateBookRequestDTOValidator implements Validator {
         if(book.isEmpty()) {
             errors.rejectValue("id", "id.not.found", new String[]{"" + dto.getId()}, "book with id: {0} is not found".replace("{0}", dto.getId().toString()));
         }
-        if (dto.getId() == null) {
 
-        }
         if(errors.hasErrors()){
             return;
         }
+
         if (dto.getTitle().length() > 700) {
             errors.rejectValue("title", "title.exceeds.allowed.length", new String[]{"" + dto.getTitle()}, "title exceeds allowed character length");
         }
+
         if(errors.hasErrors()){
             return;
         }
+
         if (dto.getAuthor().length() > 500) {
             errors.rejectValue("author", "author.exceeds.allowed.length", new String[]{"" + dto.getAuthor()}, "author exceeds allowed character length");
         }
+
         if(errors.hasErrors()){
             return;
         }
+
         if (dto.getPublicationDate().after(new Date())) {
             errors.rejectValue("publicationDate", "publicationDate.is.after.today", new String[]{"" + dto.getPublicationDate()}, "provided publicationDate {0} cannot precede today {1}".replace("{0}", dto.getPublicationDate().toString()).replace("{1}", new Date().toString()));
         }
+
     }
 
 }
