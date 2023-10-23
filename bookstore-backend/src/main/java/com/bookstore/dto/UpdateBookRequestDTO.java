@@ -1,9 +1,13 @@
 package com.bookstore.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 public class UpdateBookRequestDTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -1421428505276761447L;
 
     private Long id;
 

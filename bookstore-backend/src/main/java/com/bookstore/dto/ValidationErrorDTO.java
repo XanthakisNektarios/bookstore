@@ -1,6 +1,12 @@
 package com.bookstore.dto;
 
-public class ValidationErrorDTO {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class ValidationErrorDTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -2924253201035139500L;
 
     private String field;
 
