@@ -11,15 +11,18 @@ public class BookDTO implements Serializable {
 
     private String title;
 
-    private String author;
+    private AuthorDTO author;
+
+    private String publisher;
 
     private Integer quantity;
 
     private Date publicationDate;
 
-    public BookDTO(String title, String author, Integer quantity, Date publicationDate) {
+    public BookDTO(String title,  AuthorDTO author, String publisher, Integer quantity, Date publicationDate) {
         this.title = title;
         this.author = author;
+        this.publisher = publisher;
         this.quantity = quantity;
         this.publicationDate = publicationDate;
     }
@@ -32,11 +35,19 @@ public class BookDTO implements Serializable {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public AuthorDTO getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(AuthorDTO author) {
         this.author = author;
     }
 
@@ -60,8 +71,9 @@ public class BookDTO implements Serializable {
     public String toString() {
         return "BookDTO{" +
                 "title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", quantity='" + quantity + '\'' +
+                ", publisher='" + publisher + '\'' +
+                ", author=" + author +
+                ", quantity=" + quantity +
                 ", publicationDate=" + publicationDate +
                 '}';
     }

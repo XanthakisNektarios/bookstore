@@ -9,13 +9,13 @@ public class UpdateBookRequestDTO implements Serializable {
 
     private String title;
 
-    private String author;
+    private AuthorDTO author;
 
     private Integer quantity;
 
     private Date publicationDate;
 
-    public UpdateBookRequestDTO(Long id, String title, String author, Integer quantity, Date publicationDate) {
+    public UpdateBookRequestDTO(Long id, String title, AuthorDTO author, Integer quantity, Date publicationDate) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -39,11 +39,11 @@ public class UpdateBookRequestDTO implements Serializable {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public AuthorDTO getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(AuthorDTO author) {
         this.author = author;
     }
 

@@ -5,25 +5,40 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="book")
+@Table(name="BOOK")
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "BOOK_ID")
     private Long id;
 
-    @Column(name = "title")
+    @Column(name = "TITLE")
     private String title;
 
-    @Column(name = "author")
-    private String author;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "AUTHOR_ID")
+    private Author author;
 
-    @Column(name = "quantity")
+    @Column(name = "PUBLISHER")
+    private String publisher;
+
+    @Column(name = "QUANTITY")
     private int quantity;
 
-    @Column(name = "publication_date")
+    @Column(name = "PUBLICATION_DATE")
     private Date publicationDate;
+
+    public Book(String title, Author author, String publisher, int quantity, Date publicationDate) {
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.quantity = quantity;
+        this.publicationDate = publicationDate;
+    }
+
+    public Book() {
+    }
 
     public Long getId() {
         return id;
@@ -41,12 +56,20 @@ public class Book {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
     }
 
     public int getQuantity() {
@@ -70,7 +93,8 @@ public class Book {
         return "Book{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", author='" + author + '\'' +
+                ", author=" + author +
+                ", publisher='" + publisher + '\'' +
                 ", quantity=" + quantity +
                 ", publicationDate=" + publicationDate +
                 '}';

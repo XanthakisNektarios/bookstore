@@ -1,7 +1,7 @@
 package com.bookstore.validator;
 
-import com.bookstore.domain.Book;
-import com.bookstore.dto.UpdateBookRequestDTO;
+import com.bookstore.dto.AuthorDTO;
+import com.bookstore.dto.BookDTO;
 import com.bookstore.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,34 +9,33 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Component
-public class UpdateBookRequestDTOValidator implements Validator {
+public class SaveBookRequestDTOValidator implements Validator {
 
     private BookRepository bookRepository;
 
     @Autowired
-    public UpdateBookRequestDTOValidator(BookRepository bookRepository) {
+    public SaveBookRequestDTOValidator(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-       return clazz.isAssignableFrom(UpdateBookRequestDTO.class);
+        return clazz.isAssignableFrom(BookDTO.class);
     }
 
     @Override
     public void validate(Object object, Errors errors) {
         if (object == null) {
-            errors.reject("Provided UpdateBookRequestDTO is null");
+            errors.reject("Provided BookDTO is null");
             return;
         }
-        UpdateBookRequestDTO dto = (UpdateBookRequestDTO) object;
+        BookDTO dto = (BookDTO) object;
         performSyntaxValidations(dto, errors);
     }
 
-    protected void performSyntaxValidations(UpdateBookRequestDTO dto, Errors errors){
+    protected void performSyntaxValidations(BookDTO dto, Errors errors){
         checkNotEmptyMandatoryFields(dto, errors);
         if (errors.hasErrors()) {
             return;
@@ -49,10 +48,7 @@ public class UpdateBookRequestDTOValidator implements Validator {
      * @param dto
      * @param errors
      */
-    protected void checkNotEmptyMandatoryFields(UpdateBookRequestDTO dto, Errors errors) {
-        if (dto.getId() == null) {
-            errors.rejectValue("id", "mandatory", new String[]{"" + dto.getId()}, "id is a mandatory field");
-        }
+    protected void checkNotEmptyMandatoryFields(BookDTO dto, Errors errors) {
 
         if (dto.getTitle() == null) {
             errors.rejectValue("title", "mandatory", new String[]{"" + dto.getTitle()}, "title is a mandatory field");
@@ -60,6 +56,10 @@ public class UpdateBookRequestDTOValidator implements Validator {
 
         if (dto.getAuthor() == null) {
             errors.rejectValue("author", "mandatory", new String[]{"" + dto.getAuthor()}, "author is a mandatory field");
+        }
+
+        if (dto.getPublisher() == null) {
+            errors.rejectValue("publisher", "mandatory", new String[]{"" + dto.getPublisher()}, "publisher is a mandatory field");
         }
 
         if (dto.getQuantity() == null) {
@@ -76,18 +76,24 @@ public class UpdateBookRequestDTOValidator implements Validator {
      * @param dto
      * @param errors
      */
-    protected void checkFieldsHaveValidValues(UpdateBookRequestDTO dto, Errors errors) {
-        Optional<Book> book = this.bookRepository.findById(dto.getId());
-        if(book.isEmpty()) {
-            errors.rejectValue("id", "id.not.found", new String[]{"" + dto.getId()}, "book with id: {0} is not found".replace("{0}", dto.getId().toString()));
+    protected void checkFieldsHaveValidValues(BookDTO dto, Errors errors) {
+
+        if (dto.getTitle().length() > 700) {
+            errors.rejectValue("title", "title.exceeds.allowed.length", new String[]{"" + dto.getTitle()}, "title exceeds allowed character length");
         }
 
         if(errors.hasErrors()){
             return;
         }
 
-        if (dto.getTitle().length() > 700) {
-            errors.rejectValue("title", "title.exceeds.allowed.length", new String[]{"" + dto.getTitle()}, "title exceeds allowed character length");
+        checkAuthorHasValidValues(dto.getAuthor(), errors);
+
+        if(errors.hasErrors()){
+            return;
+        }
+
+        if (dto.getPublisher().length() > 500) {
+            errors.rejectValue("publisher", "publisher.exceeds.allowed.length", new String[]{"" + dto.getTitle()}, "publisher exceeds allowed character length");
         }
 
         if(errors.hasErrors()){
@@ -98,6 +104,34 @@ public class UpdateBookRequestDTOValidator implements Validator {
             errors.rejectValue("publicationDate", "publicationDate.is.after.today", new String[]{"" + dto.getPublicationDate()}, "provided publicationDate {0} cannot precede today {1}".replace("{0}", dto.getPublicationDate().toString()).replace("{1}", new Date().toString()));
         }
 
+    }
+
+    /**
+     * check that all fields of AuthorDTO have valid values
+     * @param dto
+     * @param errors
+     */
+    protected void checkAuthorHasValidValues(AuthorDTO dto, Errors errors) {
+
+        if (dto.getFirstName().length() > 700) {
+            errors.rejectValue("firstName", "firstName.exceeds.allowed.length", new String[]{"" + dto.getFirstName()}, "Author firstName exceeds allowed character length");
+        }
+
+        if(errors.hasErrors()){
+            return;
+        }
+
+        if (dto.getLastName().length() > 500) {
+            errors.rejectValue("lastName", "lastName.exceeds.allowed.length", new String[]{"" + dto.getLastName()}, "Author lastName exceeds allowed character length");
+        }
+
+        if(errors.hasErrors()){
+            return;
+        }
+
+        if (dto.getCountry().length() > 500) {
+            errors.rejectValue("country", "country.exceeds.allowed.length", new String[]{"" + dto.getCountry()}, "Author country exceeds allowed character length");
+        }
     }
 
 }

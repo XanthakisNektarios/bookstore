@@ -5,6 +5,7 @@ import com.bookstore.dto.BookListDTO;
 import com.bookstore.dto.UpdateBookRequestDTO;
 import com.bookstore.dto.ValidationErrorDTO;
 import com.bookstore.service.BookService;
+import com.bookstore.validator.SaveBookRequestDTOValidator;
 import com.bookstore.validator.UpdateBookRequestDTOValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +30,15 @@ public class BookStoreController {
 
     private UpdateBookRequestDTOValidator updateBookRequestDTOValidator;
 
+    private SaveBookRequestDTOValidator saveBookRequestDTOValidator;
+
     @Autowired
-    public BookStoreController(BookService bookService, UpdateBookRequestDTOValidator updateBookRequestDTOValidator) {
+    public BookStoreController(BookService bookService,
+                               UpdateBookRequestDTOValidator updateBookRequestDTOValidator,
+                               SaveBookRequestDTOValidator saveBookRequestDTOValidator) {
         this.bookService = bookService;
         this.updateBookRequestDTOValidator = updateBookRequestDTOValidator;
+        this.saveBookRequestDTOValidator = saveBookRequestDTOValidator;
     }
 
     /**
@@ -64,6 +70,29 @@ public class BookStoreController {
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Throwable e){
             LOGGER.error("End BookStoreController.getBook. Failed to fetch book", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /**
+     * Save book
+     * @param bookDTO
+     * @return
+     */
+    @PostMapping(value="/addBook")
+    ResponseEntity addBook(@RequestBody BookDTO bookDTO) {
+        LOGGER.debug("Start BookStoreController.addBook");
+        try{
+            BindingResult errors = new BindException(bookDTO, "bookDTO");
+            this.saveBookRequestDTOValidator.validate(bookDTO, errors);
+            if (errors.hasErrors()) {
+                List<ValidationErrorDTO> errorMessages = errors.getFieldErrors().stream().map(error -> new ValidationErrorDTO(error.getField(), error.getCode(), error.getDefaultMessage())).collect(Collectors.toList());
+                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(errorMessages);
+            }
+            bookService.saveBook(bookDTO);
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully saved Book");
+        } catch (Throwable e){
+            LOGGER.error("End BookStoreController.addBook. Failed to fetch book", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
