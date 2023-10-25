@@ -74,6 +74,13 @@
             <artifactId>flyway-mysql</artifactId>
         </dependency>
 
+        <!-- Prometheus -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- Cache -->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->
