@@ -57,7 +57,7 @@ public class BookStoreController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookListDTO.class)) }),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
-                    content = @Content) })
+                    content = @Content)})
     ResponseEntity<BookListDTO> getAllBooks() {
         LOGGER.debug("Start BookStoreController.getAllBooks");
         try{
@@ -81,8 +81,7 @@ public class BookStoreController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookDTO.class)) }),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookDTO.class)) })
+                    content = @Content )
     })
     ResponseEntity<BookDTO> getBook(@PathVariable("id") Long id) {
         LOGGER.debug("Start BookStoreController.getBook");
@@ -110,10 +109,9 @@ public class BookStoreController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = List.class)) }),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookDTO.class)) })
+                    content = @Content)
     })
-    ResponseEntity addBook(@RequestBody BookDTO bookDTO) {
+    ResponseEntity<?> addBook(@RequestBody BookDTO bookDTO) {
         LOGGER.debug("Start BookStoreController.addBook");
         try{
             BindingResult errors = new BindException(bookDTO, "bookDTO");
@@ -145,10 +143,9 @@ public class BookStoreController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookDTO.class)) }),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookDTO.class)) })
+                    content = @Content)
     })
-    ResponseEntity updateBook(@RequestBody UpdateBookRequestDTO updateBookRequestDTO) {
+    ResponseEntity<?> updateBook(@RequestBody UpdateBookRequestDTO updateBookRequestDTO) {
         LOGGER.debug("Start BookStoreController.updateBook");
         try{
             BindingResult errors = new BindException(updateBookRequestDTO, "updateBookRequestDTO");
@@ -180,8 +177,7 @@ public class BookStoreController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookDTO.class)) }),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookDTO.class)) })
+                    content = @Content)
     })
     ResponseEntity<?> deleteBook(@PathVariable("id") Long id) {
         LOGGER.debug("Start BookStoreController.deleteBook");
