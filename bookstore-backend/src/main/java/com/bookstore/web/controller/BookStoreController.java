@@ -7,6 +7,11 @@ import com.bookstore.dto.ValidationErrorDTO;
 import com.bookstore.service.BookService;
 import com.bookstore.validator.SaveBookRequestDTOValidator;
 import com.bookstore.validator.UpdateBookRequestDTOValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +50,14 @@ public class BookStoreController {
      * Get all existing books
      * @return
      */
-    @GetMapping(value="/getAllBooks")
+    @GetMapping(value="/getAllBooks", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get all books")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all book ",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookListDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content) })
     ResponseEntity<BookListDTO> getAllBooks() {
         LOGGER.debug("Start BookStoreController.getAllBooks");
         try{
@@ -62,7 +74,16 @@ public class BookStoreController {
      * @param id
      * @return
      */
-    @GetMapping(value="/getBook/{id}")
+    @GetMapping(value="/getBook/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get a book")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched book ",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) })
+    })
     ResponseEntity<BookDTO> getBook(@PathVariable("id") Long id) {
         LOGGER.debug("Start BookStoreController.getBook");
         try{
@@ -80,6 +101,18 @@ public class BookStoreController {
      * @return
      */
     @PostMapping(value="/addBook")
+    @Operation(summary = "Save a book")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all book ",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) }),
+            @ApiResponse(responseCode = "412", description = "Preconditions Failed",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = List.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) })
+    })
     ResponseEntity addBook(@RequestBody BookDTO bookDTO) {
         LOGGER.debug("Start BookStoreController.addBook");
         try{
@@ -103,6 +136,18 @@ public class BookStoreController {
      * @return
      */
     @PutMapping(value="/updateBook", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update a book")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Book updated",
+                    content = { @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = BookDTO.class)) }),
+            @ApiResponse(responseCode = "412", description = "Precondition Failed",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) })
+    })
     ResponseEntity updateBook(@RequestBody UpdateBookRequestDTO updateBookRequestDTO) {
         LOGGER.debug("Start BookStoreController.updateBook");
         try{
@@ -126,6 +171,18 @@ public class BookStoreController {
      * @return
      */
     @DeleteMapping(value="/deleteBook/{id}")
+    @Operation(summary = "Update a book")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Delete a book",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) }),
+            @ApiResponse(responseCode = "412", description = "Precondition Failed",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) })
+    })
     ResponseEntity<?> deleteBook(@PathVariable("id") Long id) {
         LOGGER.debug("Start BookStoreController.deleteBook");
         try{
