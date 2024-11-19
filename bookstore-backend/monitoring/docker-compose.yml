@@ -17,3 +17,13 @@ services:
     restart: unless-stopped
     volumes:
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube:9.9.4-community
+    volumes:
+      - ./SonarQube/sonarcube_home/sonarqube_data:/opt/sonarqube/data
+      - ./SonarQube/sonarcube_home/sonarqube_logs:/opt/sonarqube/logs
+      - ./SonarQube/sonarcube_home/sonarqube_extensions:/opt/sonarqube/extensions
+    ports:
+      - "9004:9000"
