@@ -21,3 +21,5 @@ To run Sonar:
 3. Create sonar login token for the created project
 4. Replace from the following command {PROJECT_KEY} and {LOGIN_TOKEN} with the ones created on the above steps and run it: `mvn clean verify sonar:sonar -Dsonar.projectKey={PROJECT_KEY} -Dsonar.host.url=http://localhost:9004 -Dsonar.login={LOGIN_TOKEN}`
 -------------------------------------
+
+Swagger available at: http://localhost:8080/swagger-ui/index.html/
