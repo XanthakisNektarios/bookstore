@@ -55,13 +55,13 @@ public class BookService {
      * @return books
      */
     public BookDTO getBook(Long id) {
-        LOGGER.debug("Start BookService.getBook with id: " + id);
+        LOGGER.debug("Start BookService.getBook with id: {}", id);
         Optional<Book> book = bookRepository.findById(id);
         if (book.isEmpty()) {
-            LOGGER.warn("Book with title = {title} not found".replace("{id}", "" + id));
+            LOGGER.warn("Book with id = {} not found", id);
             return null;
         }
-        LOGGER.warn("Book with title = {id} found in database".replace("{id}", "" + id));
+        LOGGER.warn("Book with id = {} found in database", id);
         return convertToBookDTO(book.get());
     }
 
@@ -74,10 +74,10 @@ public class BookService {
         LOGGER.debug("Start BookService.saveBook");
         Optional<Author> author = this.authorRepository.findByFirstNameAndLastName(bookDTO.getAuthor().getFirstName(), bookDTO.getAuthor().getLastName());
         if (author.isEmpty()) {
-            LOGGER.warn("Author with name = {name} not found".replace("{name}", "" + bookDTO.getAuthor().getFirstName() + bookDTO.getAuthor().getLastName()));
+            LOGGER.warn("Author with name = {} not found", bookDTO.getAuthor().getFirstName() + bookDTO.getAuthor().getLastName());
         } else {
             this.bookRepository.save(convertToBookEntity(bookDTO, author.get()));
-            LOGGER.warn("Book with title = {title} successfully saved in in database".replace("{title}", "" + bookDTO.getTitle()));
+            LOGGER.warn("Book with title = {} successfully saved in in database", bookDTO.getTitle());
         }
 
     }
@@ -88,16 +88,16 @@ public class BookService {
      */
     @Transactional
     public BookDTO updateBook(UpdateBookRequestDTO updateBookRequestDTO) {
-        LOGGER.debug("Start BookService.updateBook for book: " + updateBookRequestDTO);
+        LOGGER.debug("Start BookService.updateBook for book: {}", updateBookRequestDTO);
 
         Optional<Book> book = bookRepository.findById(updateBookRequestDTO.getId());
         if (book.isEmpty()) {
-            LOGGER.warn("BookService.updateBook no such book found with title = {title}".replace("{title}", "" + updateBookRequestDTO.getTitle()));
+            LOGGER.warn("BookService.updateBook no such book found with title = {}", updateBookRequestDTO.getTitle());
             return null;
         }
 
         Book foundBook = book.get();
-        LOGGER.warn("Book with title = {title} found in database and updated".replace("{title}", "" + updateBookRequestDTO.getTitle()));
+        LOGGER.warn("Book with title = {} found in database and updated", updateBookRequestDTO.getTitle());
         foundBook.setTitle(updateBookRequestDTO.getTitle());
         foundBook.setQuantity(updateBookRequestDTO.getQuantity());
         foundBook.setPublicationDate(updateBookRequestDTO.getPublicationDate());
