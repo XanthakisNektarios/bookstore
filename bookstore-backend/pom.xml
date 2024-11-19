@@ -8,12 +8,20 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <groupId>com.example</groupId>
     <artifactId>bookstore-backend</artifactId>
     <name>bookstore-backend</name>
     <description>bookstore-backend</description>
     <properties>
         <java.version>17</java.version>
+        <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+
+        <!-- Sonar -->
+        <sonar.language>java</sonar.language>
+        <sonar.sources>src/main/java</sonar.sources>
+        <sonar.tests>src/test/java</sonar.tests>
+        <sonar.coverage.exclusions>**/domain/*.java,**/dto/*.java,**/repository/*.java,**/BookstoreBackendApplication.java</sonar.coverage.exclusions>
+        <sonar.cpd.exclusions>**/domain/*.java,**/dto/*.java,**/repository/*.java,**/BookstoreBackendApplication.java</sonar.cpd.exclusions>
     </properties>
     <dependencies>
         <dependency>
@@ -115,6 +123,42 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Sonar -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>com/bookstore/BookstoreBackendApplication.class</exclude>
+                        <exclude>com/bookstore/domain/**/*.class</exclude>
+                        <exclude>com/bookstore/dto/**/*.class</exclude>
+                        <exclude>com/bookstore/repository/**/*.class</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <!-- attached to Maven test phase -->
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
