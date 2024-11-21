@@ -5,13 +5,14 @@ To run Bookstore locally:
 3. Run spring boot with active profiles dev
 --------------------------------------
 
-To start SonarQube, Grafana and Prometheus containers:
+To start SonarQube, Grafana, Prometheus and Redis containers:
 --------------------------------------
 1. Navigate to folder bookstore-backend/monitoring
 2. Run docker command to start the containers: docker compose up --detach
 3. Prometheus will start at: http://localhost:9090/
 4. Grafana will start at: http://localhost:3000/
 5. SonarQube will start at: http://localhost:9004/
+6. Redis will start at http://localhost:8001/redis-stack/browser
 --------------------------------------
 
 To run Sonar:

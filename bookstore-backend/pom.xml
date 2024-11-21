@@ -20,8 +20,8 @@
         <sonar.language>java</sonar.language>
         <sonar.sources>src/main/java</sonar.sources>
         <sonar.tests>src/test/java</sonar.tests>
-        <sonar.coverage.exclusions>**/domain/*.java,**/dto/*.java,**/repository/*.java,**/BookstoreBackendApplication.java</sonar.coverage.exclusions>
-        <sonar.cpd.exclusions>**/domain/*.java,**/dto/*.java,**/repository/*.java,**/BookstoreBackendApplication.java</sonar.cpd.exclusions>
+        <sonar.coverage.exclusions>**/conf/*.java,**/domain/*.java,**/dto/*.java,**/repository/*.java,**/BookstoreBackendApplication.java</sonar.coverage.exclusions>
+        <sonar.cpd.exclusions>**/conf/*.java,**/domain/*.java,**/dto/*.java,**/repository/*.java,**/BookstoreBackendApplication.java</sonar.cpd.exclusions>
     </properties>
     <dependencies>
         <dependency>
@@ -97,24 +97,14 @@
         </dependency>
 
         <!-- Cache -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-cache</artifactId>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.springframework.boot</groupId>-->
-<!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>javax.cache</groupId>-->
-<!--            <artifactId>cache-api</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.ehcache</groupId>-->
-<!--            <artifactId>ehcache</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
 
     </dependencies>
 
@@ -139,6 +129,7 @@
                 <configuration>
                     <excludes>
                         <exclude>com/bookstore/BookstoreBackendApplication.class</exclude>
+                        <exclude>com/bookstore/conf/**/*.class</exclude>
                         <exclude>com/bookstore/domain/**/*.class</exclude>
                         <exclude>com/bookstore/dto/**/*.class</exclude>
                         <exclude>com/bookstore/repository/**/*.class</exclude>

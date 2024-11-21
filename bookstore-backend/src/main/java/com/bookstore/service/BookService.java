@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -37,15 +38,13 @@ public class BookService {
      * Retrieve all books from database and create the response dto
      * @return books
      */
+    @Cacheable(value = "books")
     public BookListDTO getAllBooks() {
         LOGGER.debug("Start BookService.getAllBooks");
         List<Book> books = bookRepository.findAll();
         if (!books.isEmpty()) {
-            LOGGER.debug("Start BookService.getAllBooks");
             return convertToBookListDTO(books);
         }
-
-        LOGGER.warn("0 books found in database");
         return new BookListDTO();
     }
 

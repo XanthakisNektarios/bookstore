@@ -14,6 +14,8 @@ public class AuthorDTO implements Serializable {
 
     private String country;
 
+    public AuthorDTO(){}
+
     public AuthorDTO(String firstName, String lastName, String country) {
         this.firstName = firstName;
         this.lastName = lastName;
