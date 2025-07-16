@@ -2,8 +2,11 @@ package com.bookstore.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name="AUTHOR")
+@Table(name = "AUTHOR")
 public class Author {
 
     @Id
@@ -20,16 +23,17 @@ public class Author {
     @Column(name = "COUNTRY")
     private String country;
 
-    public Author(String firstName, String lastName, String country) {
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Book> books = new ArrayList<>();
+
+    public Author(String firstName, String lastName, String country, List<Book> books) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.country = country;
+        this.books = books;
     }
 
-    public Author() {
-
-    }
-
+    public Author() {}
 
     public Long getId() {
         return id;
@@ -63,6 +67,14 @@ public class Author {
         this.country = country;
     }
 
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
+
     @Override
     public String toString() {
         return "Author{" +
@@ -70,6 +82,7 @@ public class Author {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", country='" + country + '\'' +
+                ", books=" + books +
                 '}';
     }
 }

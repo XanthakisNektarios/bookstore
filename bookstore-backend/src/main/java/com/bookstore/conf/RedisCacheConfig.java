@@ -21,7 +21,7 @@ public class RedisCacheConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
 
-        cacheConfigurations.put("books", createCacheConfig(Duration.ofHours(1)));
+        cacheConfigurations.put("books", createCacheConfig(Duration.ofMinutes(10)));
 
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(createCacheConfig(Duration.ofDays(1)))

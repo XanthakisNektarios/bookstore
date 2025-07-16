@@ -1,7 +1,7 @@
 To run Bookstore locally:
 --------------------------------------
 1. Navigate to folder src/main/resources 
-2. Create application-dev.properties file based on application.properties file
+2. Create application-{environment}.properties file based on application.properties file
 3. Run spring boot with active profiles dev
 --------------------------------------
 

@@ -50,24 +50,24 @@ public class SaveBookRequestDTOValidator implements Validator {
      */
     protected void checkNotEmptyMandatoryFields(BookDTO dto, Errors errors) {
 
-        if (dto.getTitle() == null) {
-            errors.rejectValue("title", "mandatory", new String[]{"" + dto.getTitle()}, "title is a mandatory field");
+        if (dto.title() == null) {
+            errors.rejectValue("title", "mandatory", new String[]{""}, "title is a mandatory field");
         }
 
-        if (dto.getAuthor() == null) {
-            errors.rejectValue("author", "mandatory", new String[]{"" + dto.getAuthor()}, "author is a mandatory field");
+        if (dto.author() == null) {
+            errors.rejectValue("author", "mandatory", new String[]{""}, "author is a mandatory field");
         }
 
-        if (dto.getPublisher() == null) {
-            errors.rejectValue("publisher", "mandatory", new String[]{"" + dto.getPublisher()}, "publisher is a mandatory field");
+        if (dto.publisher() == null) {
+            errors.rejectValue("publisher", "mandatory", new String[]{""}, "publisher is a mandatory field");
         }
 
-        if (dto.getQuantity() == null) {
-            errors.rejectValue("quantity", "mandatory", new String[]{"" + dto.getQuantity()}, "quantity is a mandatory field");
+        if (dto.quantity() == null) {
+            errors.rejectValue("quantity", "mandatory", new String[]{""}, "quantity is a mandatory field");
         }
 
-        if (dto.getPublicationDate() == null) {
-            errors.rejectValue("publicationDate", "mandatory", new String[]{"" + dto.getPublicationDate()}, "publicationDate is a mandatory field");
+        if (dto.publicationDate() == null) {
+            errors.rejectValue("publicationDate", "mandatory", new String[]{""}, "publicationDate is a mandatory field");
         }
     }
 
@@ -78,30 +78,30 @@ public class SaveBookRequestDTOValidator implements Validator {
      */
     protected void checkFieldsHaveValidValues(BookDTO dto, Errors errors) {
 
-        if (dto.getTitle().length() > 700) {
-            errors.rejectValue("title", "title.exceeds.allowed.length", new String[]{"" + dto.getTitle()}, "title exceeds allowed character length");
+        if (dto.title().length() > 700) {
+            errors.rejectValue("title", "title.exceeds.allowed.length", new String[]{dto.title()}, "title exceeds allowed character length");
         }
 
         if(errors.hasErrors()){
             return;
         }
 
-        checkAuthorHasValidValues(dto.getAuthor(), errors);
+        checkAuthorHasValidValues(dto.author(), errors);
 
         if(errors.hasErrors()){
             return;
         }
 
-        if (dto.getPublisher().length() > 500) {
-            errors.rejectValue("publisher", "publisher.exceeds.allowed.length", new String[]{"" + dto.getTitle()}, "publisher exceeds allowed character length");
+        if (dto.publisher().length() > 500) {
+            errors.rejectValue("publisher", "publisher.exceeds.allowed.length", new String[]{dto.publisher()}, "publisher exceeds allowed character length");
         }
 
         if(errors.hasErrors()){
             return;
         }
 
-        if (dto.getPublicationDate().after(new Date())) {
-            errors.rejectValue("publicationDate", "publicationDate.is.after.today", new String[]{"" + dto.getPublicationDate()}, "provided publicationDate {0} cannot precede today {1}".replace("{0}", dto.getPublicationDate().toString()).replace("{1}", new Date().toString()));
+        if (dto.publicationDate().after(new Date())) {
+            errors.rejectValue("publicationDate", "publicationDate.is.after.today", new String[]{"" + dto.publicationDate()}, "provided publicationDate {0} cannot precede today {1}".replace("{0}", dto.publicationDate().toString()).replace("{1}", new Date().toString()));
         }
 
     }
@@ -113,24 +113,24 @@ public class SaveBookRequestDTOValidator implements Validator {
      */
     protected void checkAuthorHasValidValues(AuthorDTO dto, Errors errors) {
 
-        if (dto.getFirstName().length() > 700) {
-            errors.rejectValue("firstName", "firstName.exceeds.allowed.length", new String[]{"" + dto.getFirstName()}, "Author firstName exceeds allowed character length");
+        if (dto.firstName().length() > 700) {
+            errors.rejectValue("firstName", "firstName.exceeds.allowed.length", new String[]{dto.firstName()}, "Author firstName exceeds allowed character length");
         }
 
         if(errors.hasErrors()){
             return;
         }
 
-        if (dto.getLastName().length() > 500) {
-            errors.rejectValue("lastName", "lastName.exceeds.allowed.length", new String[]{"" + dto.getLastName()}, "Author lastName exceeds allowed character length");
+        if (dto.lastName().length() > 500) {
+            errors.rejectValue("lastName", "lastName.exceeds.allowed.length", new String[]{dto.lastName()}, "Author lastName exceeds allowed character length");
         }
 
         if(errors.hasErrors()){
             return;
         }
 
-        if (dto.getCountry().length() > 500) {
-            errors.rejectValue("country", "country.exceeds.allowed.length", new String[]{"" + dto.getCountry()}, "Author country exceeds allowed character length");
+        if (dto.country().length() > 500) {
+            errors.rejectValue("country", "country.exceeds.allowed.length", new String[]{dto.country()}, "Author country exceeds allowed character length");
         }
     }
 

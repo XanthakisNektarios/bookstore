@@ -1,11 +1,10 @@
 package com.bookstore.web.controller;
 
-import com.bookstore.dto.BookDTO;
-import com.bookstore.dto.BookListDTO;
-import com.bookstore.dto.UpdateBookRequestDTO;
-import com.bookstore.dto.ValidationErrorDTO;
+import com.bookstore.dto.*;
+import com.bookstore.service.AuthorService;
 import com.bookstore.service.BookService;
 import com.bookstore.validator.SaveBookRequestDTOValidator;
+import com.bookstore.validator.UpdateAuthorRequestDTOValidator;
 import com.bookstore.validator.UpdateBookRequestDTOValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,17 +32,25 @@ public class BookStoreController {
 
     private BookService bookService;
 
+    private AuthorService authorService;
+
     private UpdateBookRequestDTOValidator updateBookRequestDTOValidator;
 
     private SaveBookRequestDTOValidator saveBookRequestDTOValidator;
 
+    private UpdateAuthorRequestDTOValidator updateAuthorRequestDTOValidator;
+
     @Autowired
     public BookStoreController(BookService bookService,
+                               AuthorService authorService,
                                UpdateBookRequestDTOValidator updateBookRequestDTOValidator,
-                               SaveBookRequestDTOValidator saveBookRequestDTOValidator) {
+                               SaveBookRequestDTOValidator saveBookRequestDTOValidator,
+                               UpdateAuthorRequestDTOValidator updateAuthorRequestDTOValidator) {
         this.bookService = bookService;
+        this.authorService = authorService;
         this.updateBookRequestDTOValidator = updateBookRequestDTOValidator;
         this.saveBookRequestDTOValidator = saveBookRequestDTOValidator;
+        this.updateAuthorRequestDTOValidator = updateAuthorRequestDTOValidator;
     }
 
     /**
@@ -51,20 +58,20 @@ public class BookStoreController {
      * @return
      */
     @GetMapping(value="/getAllBooks", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all books")
+    @Operation(summary = "Get all Books")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully fetched all book ",
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all Books ",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookListDTO.class)) }),
+                            schema = @Schema(implementation = BookDTO.class)) }),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content)})
-    ResponseEntity<BookListDTO> getAllBooks() {
+    ResponseEntity<List<BookDTO>> getAllBooks() {
         LOGGER.debug("Start BookStoreController.getAllBooks");
         try{
-            BookListDTO response = bookService.getAllBooks();
+            List<BookDTO> response = bookService.getAllBooks();
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Throwable e){
-            LOGGER.error("End BookStoreController.getAllBooks. Failed to fetch book list", e);
+            LOGGER.error("End BookStoreController.getAllBooks. Failed to fetch Book list", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -75,9 +82,9 @@ public class BookStoreController {
      * @return
      */
     @GetMapping(value="/getBook/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get a book")
+    @Operation(summary = "Get a Book")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully fetched book ",
+            @ApiResponse(responseCode = "200", description = "Successfully fetched Book ",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookDTO.class)) }),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
@@ -89,7 +96,7 @@ public class BookStoreController {
             BookDTO response = bookService.getBook(id);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Throwable e){
-            LOGGER.error("End BookStoreController.getBook. Failed to fetch book", e);
+            LOGGER.error("End BookStoreController.getBook. Failed to fetch Book", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -100,9 +107,9 @@ public class BookStoreController {
      * @return
      */
     @PostMapping(value="/addBook")
-    @Operation(summary = "Save a book")
+    @Operation(summary = "Save a Book")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully fetched all book ",
+            @ApiResponse(responseCode = "200", description = "Successfully saved a Book",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookDTO.class)) }),
             @ApiResponse(responseCode = "412", description = "Preconditions Failed",
@@ -123,7 +130,7 @@ public class BookStoreController {
             bookService.saveBook(bookDTO);
             return ResponseEntity.status(HttpStatus.OK).body("Successfully saved Book");
         } catch (Throwable e){
-            LOGGER.error("End BookStoreController.addBook. Failed to fetch book", e);
+            LOGGER.error("End BookStoreController.addBook. Failed to save Book", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -157,20 +164,20 @@ public class BookStoreController {
             BookDTO response = bookService.updateBook(updateBookRequestDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Throwable e){
-            LOGGER.error("End BookStoreController.updateBook. Failed to update book", e);
+            LOGGER.error("End BookStoreController.updateBook. Failed to update Book", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     /**
-     * Delete a book
-     * @param id
+     * Delete a Book
+     * @param bookDTO
      * @return
      */
-    @DeleteMapping(value="/deleteBook/{id}")
-    @Operation(summary = "Update a book")
+    @DeleteMapping(value="/deleteBook", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete a Book")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Delete a book",
+            @ApiResponse(responseCode = "200", description = "Delete a Book",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookDTO.class)) }),
             @ApiResponse(responseCode = "412", description = "Precondition Failed",
@@ -179,13 +186,159 @@ public class BookStoreController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content)
     })
-    ResponseEntity<?> deleteBook(@PathVariable("id") Long id) {
+    ResponseEntity<?> deleteBook(@RequestBody BookDTO bookDTO) {
         LOGGER.debug("Start BookStoreController.deleteBook");
         try{
-            bookService.deleteBook(id);
+            bookService.deleteBook(bookDTO);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (Throwable e){
-            LOGGER.error("End BookStoreController.deleteBook. Failed to delete book", e);
+            LOGGER.error("End BookStoreController.deleteBook. Failed to delete Book", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /**
+     * Get all existing authors
+     * @return
+     */
+    @GetMapping(value="/getAllAuthors", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get all authors")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all Authors ",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)})
+    ResponseEntity<List<AuthorDTO>> getAllAuthors() {
+        LOGGER.debug("Start BookStoreController.getAllAuthors");
+        try{
+            List<AuthorDTO> response = authorService.getAllAuthors();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Throwable e){
+            LOGGER.error("End BookStoreController.getAllAuthors. Failed to fetch Author list", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
+    /**
+     * Get Author
+     * @param id
+     * @return
+     */
+    @GetMapping(value="/getAuthor/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get an Author")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched Author ",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content )
+    })
+    ResponseEntity<AuthorDTO> getAuthor(@PathVariable("id") Long id) {
+        LOGGER.debug("Start BookStoreController.getAuthor");
+        try{
+            AuthorDTO response = authorService.getAuthor(id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Throwable e){
+            LOGGER.error("End BookStoreController.getAuthor. Failed to fetch Author", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /**
+     * Save Author
+     * @param authorDTO
+     * @return
+     */
+    @PostMapping(value="/addAuthor")
+    @Operation(summary = "Save an Author")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully saved an Author",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDTO.class)) }),
+            @ApiResponse(responseCode = "412", description = "Preconditions Failed",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = List.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
+    ResponseEntity<?> addAuthor(@RequestBody AuthorDTO authorDTO) {
+        LOGGER.debug("Start BookStoreController.addAuthor");
+        try{
+//            BindingResult errors = new BindException(authorDTO, "authorDTO");
+//            this.saveBookRequestDTOValidator.validate(authorDTO, errors);
+//            if (errors.hasErrors()) {
+//                List<ValidationErrorDTO> errorMessages = errors.getFieldErrors().stream().map(error -> new ValidationErrorDTO(error.getField(), error.getCode(), error.getDefaultMessage())).collect(Collectors.toList());
+//                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(errorMessages);
+//            }
+            authorService.saveAuthor(authorDTO);
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully saved Author");
+        } catch (Throwable e){
+            LOGGER.error("End BookStoreController.addBook. Failed to save Author", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
+    /**
+     * Update Author
+     * @param updateAuthorRequestDTO
+     * @return
+     */
+    @PutMapping(value="/updateAuthor", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update an Author")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Author updated",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) }),
+            @ApiResponse(responseCode = "412", description = "Precondition Failed",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
+    ResponseEntity<?> updateAuthor(@RequestBody UpdateAuthorRequestDTO updateAuthorRequestDTO) {
+        LOGGER.debug("Start BookStoreController.updateAuthor");
+        try{
+            BindingResult errors = new BindException(updateAuthorRequestDTO, "updateAuthorRequestDTO");
+            this.updateAuthorRequestDTOValidator.validate(updateAuthorRequestDTO, errors);
+            if (errors.hasErrors()) {
+                List<ValidationErrorDTO> errorMessages = errors.getFieldErrors().stream().map(error -> new ValidationErrorDTO(error.getField(), error.getCode(), error.getDefaultMessage())).collect(Collectors.toList());
+                return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(errorMessages);
+            }
+            AuthorDTO response = authorService.updateAuthor(updateAuthorRequestDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Throwable e){
+            LOGGER.error("End BookStoreController.updateAuthor. Failed to update Author", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /**
+     * Delete an Author
+     * @param authorDTO
+     * @return
+     */
+    @DeleteMapping(value="/deleteAuthor", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete an Author")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Delete an Author",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDTO.class)) }),
+            @ApiResponse(responseCode = "412", description = "Precondition Failed",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDTO.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content)
+    })
+    ResponseEntity<?> deleteAuthor(@RequestBody AuthorDTO authorDTO) {
+        LOGGER.debug("Start BookStoreController.deleteAuthor");
+        try{
+            authorService.deleteAuthor(authorDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } catch (Throwable e){
+            LOGGER.error("End BookStoreController.deleteAuthor. Failed to delete Author", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

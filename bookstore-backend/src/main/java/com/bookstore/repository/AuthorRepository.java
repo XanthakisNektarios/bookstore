@@ -9,4 +9,6 @@ public interface AuthorRepository  extends JpaRepository<Author, Long> {
 
     Optional<Author> findByFirstNameAndLastName(String firstname, String lastName);
 
+    void deleteByFirstNameAndLastName(String firstName, String lastName);
+
 }

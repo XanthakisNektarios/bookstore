@@ -50,24 +50,25 @@ public class UpdateBookRequestDTOValidator implements Validator {
      * @param errors
      */
     protected void checkNotEmptyMandatoryFields(UpdateBookRequestDTO dto, Errors errors) {
-        if (dto.getId() == null) {
-            errors.rejectValue("id", "mandatory", new String[]{"" + dto.getId()}, "id is a mandatory field");
+
+        if (dto.title() == null) {
+            errors.rejectValue("title", "mandatory", new String[]{}, "title is a mandatory field");
         }
 
-        if (dto.getTitle() == null) {
-            errors.rejectValue("title", "mandatory", new String[]{"" + dto.getTitle()}, "title is a mandatory field");
+        if (dto.author() == null) {
+            errors.rejectValue("author", "mandatory", new String[]{}, "author is a mandatory field");
         }
 
-        if (dto.getAuthor() == null) {
-            errors.rejectValue("author", "mandatory", new String[]{"" + dto.getAuthor()}, "author is a mandatory field");
+        if (dto.quantity() == null) {
+            errors.rejectValue("quantity", "mandatory", new String[]{}, "quantity is a mandatory field");
         }
 
-        if (dto.getQuantity() == null) {
-            errors.rejectValue("quantity", "mandatory", new String[]{"" + dto.getQuantity()}, "quantity is a mandatory field");
+        if (dto.publicationDate() == null) {
+            errors.rejectValue("publicationDate", "mandatory", new String[]{}, "publicationDate is a mandatory field");
         }
 
-        if (dto.getPublicationDate() == null) {
-            errors.rejectValue("publicationDate", "mandatory", new String[]{"" + dto.getPublicationDate()}, "publicationDate is a mandatory field");
+        if (dto.publisher() == null) {
+            errors.rejectValue("publisher", "mandatory", new String[]{}, "publisher is a mandatory field");
         }
     }
 
@@ -77,25 +78,25 @@ public class UpdateBookRequestDTOValidator implements Validator {
      * @param errors
      */
     protected void checkFieldsHaveValidValues(UpdateBookRequestDTO dto, Errors errors) {
-        Optional<Book> book = this.bookRepository.findById(dto.getId());
+        Optional<Book> book = this.bookRepository.findByTitleAndAndPublisher(dto.title(), dto.publisher());
         if(book.isEmpty()) {
-            errors.rejectValue("id", "id.not.found", new String[]{"" + dto.getId()}, "book with id: {0} is not found".replace("{0}", dto.getId().toString()));
+            errors.rejectValue("title", "book.not.found", new String[]{dto.title(), dto.publisher()}, "book with title: {0} and publisher {1} is not found");
         }
 
         if(errors.hasErrors()){
             return;
         }
 
-        if (dto.getTitle().length() > 700) {
-            errors.rejectValue("title", "title.exceeds.allowed.length", new String[]{"" + dto.getTitle()}, "title exceeds allowed character length");
+        if (dto.title().length() > 700) {
+            errors.rejectValue("title", "title.exceeds.allowed.length", new String[]{dto.title()}, "title exceeds allowed character length");
         }
 
         if(errors.hasErrors()){
             return;
         }
 
-        if (dto.getPublicationDate().after(new Date())) {
-            errors.rejectValue("publicationDate", "publicationDate.is.after.today", new String[]{"" + dto.getPublicationDate()}, "provided publicationDate {0} cannot precede today {1}".replace("{0}", dto.getPublicationDate().toString()).replace("{1}", new Date().toString()));
+        if (dto.publicationDate().after(new Date())) {
+            errors.rejectValue("publicationDate", "publicationDate.is.after.today", new String[]{"" + dto.publicationDate()}, "provided publicationDate {0} cannot precede today {1}".replace("{0}", dto.publicationDate().toString()).replace("{1}", new Date().toString()));
         }
 
     }
