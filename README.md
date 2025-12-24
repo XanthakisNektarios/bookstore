@@ -19,7 +19,7 @@ To start SonarQube, Grafana, Prometheus and Redis containers:
 1. Navigate to folder bookstore-backend/monitoring
 2. Run docker command to start the containers: docker compose up --detach
 3. Prometheus will start at: http://localhost:9090/
-4. Grafana will start at: http://localhost:3000/
+4. Grafana will start at: http://localhost:3001/
 5. SonarQube will start at: http://localhost:9004/
 6. Redis will start at http://localhost:8001/redis-stack/browser
 --------------------------------------

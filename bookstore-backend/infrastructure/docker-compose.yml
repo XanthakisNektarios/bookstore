@@ -2,37 +2,71 @@ version: '3.7'
 
 services:
   prometheus:
-    image: prom/prometheus:v2.44.0
+    image: prom/prometheus:latest
     container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - bookstore-network
+    restart: always
 
   grafana:
-    image: grafana/grafana:9.5.2
+    image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - "3000:3000"
-    restart: unless-stopped
+      - "3001:3000"
+    restart: always
     volumes:
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - bookstore-network
 
   sonarqube:
     container_name: sonarqube
-    image: sonarqube:9.9.4-community
+    image: sonarqube:lts-community
     ports:
       - "9004:9000"
     volumes:
       - ./SonarQube/sonarcube_home/sonarqube_data:/opt/sonarqube/data
       - ./SonarQube/sonarcube_home/sonarqube_logs:/opt/sonarqube/logs
       - ./SonarQube/sonarcube_home/sonarqube_extensions:/opt/sonarqube/extensions
-    restart: unless-stopped
+    restart: always
+    networks:
+      - bookstore-network
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
 
   redis:
-    image: redis/redis-stack:latest
+    image: redis:alpine
     container_name: redis-stack-container
     ports:
       - "6379:6379"
-      - "8001:8001"
-    restart: unless-stopped
+    restart: always
+    networks:
+      - bookstore-network
+
+  bookstore-backend:
+    image: eclipse-temurin:17-jdk
+    container_name: bookstore-backend
+    working_dir: /app
+    volumes:
+      - ../..:/app
+      # Cache Maven dependencies
+      - maven-cache:/root/.m2
+    command: sh -c "apt-get update && apt-get install -y maven && mvn clean install -N -U && cd bookstore-backend && mvn clean install -DskipTests && mvn spring-boot:run -Dspring-boot.run.profiles=dev"
+    networks:
+      - bookstore-network
+    depends_on:
+      - redis
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+networks:
+  bookstore-network:
+    external: true
+
+volumes:
+  maven-cache:
